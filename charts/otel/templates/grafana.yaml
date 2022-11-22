@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+  labels:
+    app: grafana
+spec:
+  selector:
+    matchLabels:
+      app: grafana
+      component: grafana
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: grafana
+        component: grafana
+    spec:
+        containers:
+          - image: grafana/grafana:9.2.5
+            name: grafana
+            ports:
+              - containerPort: 3000
+                protocol: TCP
+            env:
+              - name: GF_AUTH_DISABLE_LOGIN_FORM
+                value: "true"
+              - name: GF_AUTH_ANONYMOUS_ENABLED
+                value: "true"
+              - name: GF_AUTH_ANONYMOUS_ORG_ROLE
+                value: "Admin"
+            resources:
+              requests:
+                memory: "64Mi"
+                cpu: "250m"
+              limits:
+                memory: "128Mi"
+                cpu: "500m"
+            readinessProbe:
+              httpGet:
+                path: "/"
+                port: 3000
+              initialDelaySeconds: 5

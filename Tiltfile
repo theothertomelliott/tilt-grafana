@@ -18,8 +18,13 @@ def grafana_kubernetes(namespace="default", labels=["grafana"]):
         namespace=namespace,
     ))
     k8s_resource(
-        "jaeger", 
-        port_forwards="16686:16686",
+        "grafana", 
+        port_forwards="3000:3000",
+        labels=labels
+    )
+    k8s_resource(
+        "tempo",
+        port_forwards="4318:4318",
         labels=labels
     )
     k8s_resource(
