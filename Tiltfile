@@ -5,7 +5,6 @@ def grafana_compose(labels=["grafana"]):
     dc_resource('loki', labels=labels)
     dc_resource('tempo', labels=labels)
     dc_resource('promtail', labels=labels)
-    dc_resource('otel-collector', labels=labels)
 
     logfile = tfdir+ "/compose/logs/tilt.log"
     local_resource('log-forwarder', serve_cmd="tilt logs -f | sed 's/│/\\|/g' > " + logfile, labels=labels)
