@@ -10,6 +10,7 @@ import (
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
+	"go.uber.org/zap"
 )
 
 // name is the Tracer name used to identify this instrumentation library.
@@ -18,12 +19,15 @@ const name = "fib"
 // App is a Fibonacci computation application.
 type App struct {
 	r io.Reader
-	l *log.Logger
+	s *zap.SugaredLogger
 }
 
 // NewApp returns a new App.
 func NewApp(r io.Reader, l *log.Logger) *App {
-	return &App{r: r, l: l}
+	logger, _ := zap.NewProduction()
+	defer logger.Sync() // flushes buffer, if any
+	sugar := logger.Sugar()
+	return &App{r: r, s: sugar}
 }
 
 // Run starts polling users for Fibonacci number requests and writes results.
@@ -48,7 +52,10 @@ func (a *App) Poll(ctx context.Context) (uint, error) {
 	_, span := otel.Tracer(name).Start(ctx, "Poll")
 	defer span.End()
 
-	a.l.Print("What Fibonacci number would you like to know: ")
+	a.s.Infow(
+		"What Fibonacci number would you like to know: ",
+		"traceID", span.SpanContext().TraceID(),
+	)
 
 	var n uint
 	_, err := fmt.Fscanf(a.r, "%d\n", &n)
@@ -72,8 +79,14 @@ func (a *App) Write(ctx context.Context, n uint) {
 		return Fibonacci(n)
 	}(ctx)
 	if err != nil {
-		a.l.Printf("Fibonacci(%d): %v\n", n, err)
+		a.s.Infow(
+			fmt.Sprintf("Fibonacci(%d): %v\n", n, err),
+			"traceID", span.SpanContext().TraceID(),
+		)
 	} else {
-		a.l.Printf("Fibonacci(%d) = %d\n", n, f)
+		a.s.Infow(
+			fmt.Sprintf("Fibonacci(%d) = %d\n", n, f),
+			"traceID", span.SpanContext().TraceID(),
+		)
 	}
 }
