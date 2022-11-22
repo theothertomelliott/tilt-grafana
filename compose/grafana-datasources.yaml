@@ -1,8 +1,5 @@
-# config file version
 apiVersion: 1
 
-# list of datasources to insert/update depending
-# what's available in the database
 datasources:
   - name: Loki
     type: loki

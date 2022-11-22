@@ -31,6 +31,9 @@ spec:
                 value: "true"
               - name: GF_AUTH_ANONYMOUS_ORG_ROLE
                 value: "Admin"
+            volumeMounts:
+              - name: grafana-datasources-vol
+                mountPath: /etc/grafana/provisioning/datasources/
             resources:
               requests:
                 memory: "64Mi"
@@ -43,3 +46,10 @@ spec:
                 path: "/"
                 port: 3000
               initialDelaySeconds: 5
+        volumes:
+          - configMap:
+              name: grafana-datasources
+              items:
+                - key: grafana-datasources
+                  path: datasources.yaml
+            name: grafana-datasources-vol
