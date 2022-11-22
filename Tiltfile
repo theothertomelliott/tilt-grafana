@@ -27,11 +27,3 @@ def grafana_kubernetes(namespace="default", labels=["grafana"]):
         port_forwards="4318:4318",
         labels=labels
     )
-    k8s_resource(
-        "otel-agent",
-        labels=labels
-    )
-    k8s_resource(
-        "otel-collector",
-        labels=labels
-    )
