@@ -1,0 +1,15 @@
+env:
+  GF_AUTH_DISABLE_LOGIN_FORM: "true"
+  GF_AUTH_ANONYMOUS_ENABLED: "true"
+  GF_AUTH_ANONYMOUS_ORG_ROLE: "Admin"
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+
+    datasources:
+      - name: Loki
+        type: loki
+        url: http://loki:3100
+      - name: Tempo
+        type: tempo
+        url: http://tempo:3100

@@ -1,3 +1,5 @@
+load('ext://helm_resource', 'helm_resource', 'helm_repo')
+
 def grafana_compose(labels=["grafana"]):
     tfdir = os.path.dirname(__file__)
     docker_compose(os.path.join(tfdir, 'compose/docker-compose.yaml'))
@@ -11,14 +13,19 @@ def grafana_compose(labels=["grafana"]):
 
 def grafana_kubernetes(namespace="default", labels=["grafana"]):
     tfdir = os.path.dirname(__file__)
-    # Load the Tilt support Helm chart
-    k8s_yaml(helm(
-        os.path.join(tfdir, 'charts/otel'),
-        namespace=namespace,
-    ))
+
+    helm_repo('grafana-helm', 'https://grafana.github.io/helm-charts')
+    helm_resource('loki', 'grafana/loki-stack')
+    helm_resource('grafana', 'grafana/grafana', flags=["-f", os.path.join(tfdir, 'grafana-values.yaml')])
+    helm_resource('tempo', 'grafana/tempo', flags=["-f", os.path.join(tfdir, 'tempo-values.yaml')])
+
     k8s_resource(
         "grafana", 
         port_forwards="3000:3000",
+        labels=labels
+    )
+    k8s_resource(
+        "loki", 
         labels=labels
     )
     k8s_resource(
