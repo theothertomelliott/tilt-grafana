@@ -1,0 +1,33 @@
+load('ext://restart_process', 'docker_build_with_restart')
+
+def generator_kubernetes():
+  tfdir = os.path.dirname(__file__)
+
+  compile_cmd = 'CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o ' + os.path.join(tfdir,'build/generator-go') + ' ' + tfdir
+
+  local_resource(
+    'generator-go-compile',
+    compile_cmd,
+    deps=['./main.go', './app.go', './fib.go', './go.mod', './go.sum'],
+    labels=['generator']
+  )
+
+  docker_build_with_restart(
+    'generator-go-image',
+    tfdir,
+    entrypoint=['/app/build/generator-go'],
+    dockerfile=os.path.join(tfdir,'deployments/Dockerfile'),
+    only=[
+      os.path.join(tfdir,'build'),
+    ],
+    live_update=[
+      sync(os.path.join(tfdir,'build'), '/app/build'),
+    ],
+  )
+
+  k8s_yaml(os.path.join(tfdir,'deployments/kubernetes.yaml'))
+  k8s_resource(
+    'generator-go',
+    resource_deps=['generator-go-compile'],
+    labels=['generator']
+  )

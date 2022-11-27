@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: generator-go
+  labels:
+    app: generator-go
+spec:
+  selector:
+    matchLabels:
+      app: generator-go
+  template:
+    metadata:
+      labels:
+        app: generator-go
+    spec:
+      containers:
+      - name: generator-go
+        image: generator-go-image
+        env:
+          - name: OTEL_OTLP_HTTP_ENDPOINT
+            value: tempo:4318
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"

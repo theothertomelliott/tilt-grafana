@@ -6,7 +6,5 @@ load('ext://tilt-grafana', 'grafana_kubernetes')
 
 grafana_kubernetes()
 
-local_resource(
-    "generator",
-    serve_cmd="OTEL_OTLP_HTTP_ENDPOINT=localhost:4318 go run ../generator"
-)
+load("../generator/Tiltfile", "generator_kubernetes")
+generator_kubernetes()
