@@ -1,0 +1,5 @@
+apiVersion: v2
+name: tilt-grafana-generator
+description: Helper chart for generating synthetic load for Grafana
+type: application
+version: 0.0.0

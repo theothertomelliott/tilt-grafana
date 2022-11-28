@@ -4,7 +4,7 @@ v1alpha1.extension_repo(name='tilt-grafana', url='file://'+curDir)
 v1alpha1.extension(name='tilt-grafana', repo_name='tilt-grafana', repo_path='')
 load('ext://tilt-grafana', 'grafana_kubernetes')
 
-grafana_kubernetes()
+endpoints = grafana_kubernetes()
 
 load("../generator/Tiltfile", "generator_kubernetes")
-generator_kubernetes()
+generator_kubernetes(endpoints)

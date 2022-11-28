@@ -1,6 +1,6 @@
 load('ext://restart_process', 'docker_build_with_restart')
 
-def generator_kubernetes():
+def generator_kubernetes(endpoints):
   tfdir = os.path.dirname(__file__)
 
   compile_cmd = 'CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o ' + os.path.join(tfdir,'build/generator-go') + ' ' + tfdir
@@ -25,7 +25,12 @@ def generator_kubernetes():
     ],
   )
 
-  k8s_yaml(os.path.join(tfdir,'deployments/kubernetes.yaml'))
+  yaml = helm(
+    os.path.join(tfdir,'deployments/charts/generator'),
+    name='generator',
+    set=['otlp_http=' + endpoints.otlp_http]
+  )
+  k8s_yaml(yaml)
   k8s_resource(
     'generator-go',
     resource_deps=['generator-go-compile'],
