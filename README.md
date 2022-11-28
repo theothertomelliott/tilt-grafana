@@ -1,6 +1,6 @@
 # Tilt Grafana
 
-A [Tilt Extension](https://docs.tilt.dev/extensions.html) for working with the LGTM stack from Grafana (Loki, Grafana, Tempo, Mimir),
+A [Tilt Extension](https://docs.tilt.dev/extensions.html) for working with the LGTM stack from Grafana (Loki, Grafana, Tempo, Mimir).
 
 # Usage
 
