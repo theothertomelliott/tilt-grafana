@@ -21,3 +21,6 @@ datasources:
         type: tempo
         url: http://tempo:3100
         uid: tempo_datasource
+      - name: Prometheus
+        type: prometheus
+        url: http://prometheus-server
