@@ -10,6 +10,12 @@ def grafana_compose(labels=["grafana"]):
 
     logfile = tfdir+ "/compose/logs/tilt.log"
     local_resource('log-forwarder', serve_cmd="tilt logs -f | sed 's/│/\\|/g' > " + logfile, labels=labels)
+    return struct(
+        otlp_grpc = "localhost:4317",
+        otlp_http = "localhost:4318",
+        zipkin = "localhost:9411",
+        jaeger_grpc = "localhost:14268" #?
+    )
 
 def grafana_kubernetes(namespace="default", labels=["grafana"]):
     tfdir = os.path.dirname(__file__)
@@ -30,6 +36,12 @@ def grafana_kubernetes(namespace="default", labels=["grafana"]):
     )
     k8s_resource(
         "tempo",
-        port_forwards="4318:4318",
         labels=labels
+    )
+
+    return struct(
+        otlp_grpc = "tempo:4317",
+        otlp_http = "tempo:4318",
+        zipkin = "tempo:9411",
+        jaeger_grpc = "tempo:14250"
     )
