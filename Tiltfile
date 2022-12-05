@@ -1,4 +1,5 @@
 load('ext://helm_resource', 'helm_resource', 'helm_repo')
+load("compose/prometheus/Tiltfile", "prometheus_compose_impl")
 
 def grafana_compose(labels=["grafana"]):
     tfdir = os.path.dirname(__file__)
@@ -15,8 +16,15 @@ def grafana_compose(labels=["grafana"]):
         otlp_grpc = "localhost:4317",
         otlp_http = "localhost:4318",
         zipkin = "localhost:9411",
-        jaeger_grpc = "localhost:14268" #?
+        jaeger_grpc = "localhost:14268", #?
+        mimir = "http://localhost:9009/api/v1/push"
     )
+
+def metrics_endpoint(name, port, path="/metrics"):
+    return {"name": name, "port": port, "path": path}
+
+def prometheus_compose(endpoints=[], labels=["grafana"]):
+    prometheus_compose_impl(endpoints,labels)
 
 def grafana_kubernetes(namespace="default", labels=["grafana"]):
     tfdir = os.path.dirname(__file__)

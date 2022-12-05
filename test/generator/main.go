@@ -6,10 +6,12 @@ import (
 	"io"
 	"log"
 	"math/rand"
+	"net/http"
 	"os"
 	"os/signal"
 	"time"
 
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/exporters/jaeger"
@@ -57,6 +59,15 @@ func main() {
 	app := NewApp(reader, l)
 	go func() {
 		errCh <- app.Run(context.Background())
+	}()
+
+	go func() {
+		promHandler := promhttp.Handler()
+		http.HandleFunc("/metrics", func(w http.ResponseWriter, r *http.Request) {
+			fmt.Println("Metrics scraped")
+			promHandler.ServeHTTP(w, r)
+		})
+		http.ListenAndServe(":2112", nil)
 	}()
 
 	select {
