@@ -1,7 +1,7 @@
 load('ext://helm_resource', 'helm_resource', 'helm_repo')
 load("compose/prometheus/Tiltfile", "prometheus_compose_impl")
 
-def grafana_compose(labels=["grafana"]):
+def grafana_compose(labels=["grafana"], metrics_endpoints=[]):
     tfdir = os.path.dirname(__file__)
     docker_compose(os.path.join(tfdir, 'compose/docker-compose.yaml'))
     dc_resource('grafana', labels=labels)
@@ -12,6 +12,10 @@ def grafana_compose(labels=["grafana"]):
 
     logfile = tfdir+ "/compose/logs/tilt.log"
     local_resource('log-forwarder', serve_cmd="tilt logs -f | sed 's/│/\\|/g' > " + logfile, labels=labels)
+
+    if len(metrics_endpoints) > 0:
+        prometheus_compose_impl(endpoints=metrics_endpoints,labels=labels)
+
     return struct(
         otlp_grpc = "localhost:4317",
         otlp_http = "localhost:4318",
@@ -22,9 +26,6 @@ def grafana_compose(labels=["grafana"]):
 
 def metrics_endpoint(name, port, path="/metrics"):
     return {"name": name, "port": port, "path": path}
-
-def prometheus_compose(endpoints=[], labels=["grafana"]):
-    prometheus_compose_impl(endpoints,labels)
 
 def grafana_kubernetes(namespace="default", labels=["grafana"]):
     tfdir = os.path.dirname(__file__)

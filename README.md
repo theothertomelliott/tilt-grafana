@@ -31,6 +31,21 @@ endpoints = grafana_compose()
 ...
 ```
 
+You may also specify a set of local endpoints to be scraped by Prometheus with the `metrics_endpoints` parameter:
+
+```
+endpoints = grafana_compose(
+    metrics_endpoints=[
+        metrics_endpoint(name='jobname', port=1234)
+    ]
+)
+```
+
+The above example will result in Prometheus scraping metrics at http://localhost:1234/metrics. These
+metrics will then be forwarded to Mimir.
+
+If the `metrics_endpoints` parameter is omitted, no Prometheus instance will be created.
+
 # Endpoints
 
 The `endpoints` struct is returned by both `grafana_kubernetes` and `grafana_compose` and contains details

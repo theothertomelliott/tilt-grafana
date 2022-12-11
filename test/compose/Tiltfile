@@ -2,9 +2,13 @@ curDir = os.path.join(os.path.dirname(__file__), "..", "..")
 
 v1alpha1.extension_repo(name='tilt-grafana', url='file://'+curDir)
 v1alpha1.extension(name='tilt-grafana', repo_name='tilt-grafana', repo_path='')
-load('ext://tilt-grafana', 'grafana_compose', 'prometheus_compose', 'metrics_endpoint')
+load('ext://tilt-grafana', 'grafana_compose', 'metrics_endpoint')
 
-endpoints = grafana_compose()
+endpoints = grafana_compose(
+    metrics_endpoints=[
+        metrics_endpoint(name='generator', port=2112)
+    ]
+)
 
 local_resource(
     "generator",
@@ -15,5 +19,3 @@ local_resource(
     links=[link("http://localhost:2112/metrics", "Metrics")],
     labels=["generator"]
 )
-
-prometheus_compose(endpoints=[metrics_endpoint(name='generator', port=2112)])

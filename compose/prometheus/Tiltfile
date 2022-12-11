@@ -22,3 +22,5 @@ def prometheus_compose_impl(endpoints=[], labels=["grafana"]):
     }
 
     docker_compose(encode_yaml({'services': services}))
+    dc_resource("prometheus", labels=labels)
+    dc_resource("scrape", labels=labels)
