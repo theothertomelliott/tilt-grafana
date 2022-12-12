@@ -12,6 +12,11 @@ spec:
     metadata:
       labels:
         app: generator-go
+      annotations:
+        phlare.grafana.com/scrape: "true"
+        phlare.grafana.com/port: "2112"
+        prometheus.io/port: "2112"
+        prometheus.io/scrape: "true" 
     spec:
       containers:
       - name: generator-go
