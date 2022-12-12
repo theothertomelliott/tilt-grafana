@@ -22,6 +22,14 @@ endpoints = grafana_kubernetes()
 ...
 ```
 
+Mimir can cause performance issues, so it is disabled in Kubernetes by default. You can enable it by setting
+`mimir_enabled=True`:
+
+```
+load('ext://tilt-grafana', 'grafana_kubernetes')
+endpoints = grafana_kubernetes(mimir_enabled=True)
+```
+
 ## Docker Compose
 
 ```

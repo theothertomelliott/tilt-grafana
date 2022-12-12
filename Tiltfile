@@ -27,15 +27,26 @@ def grafana_compose(labels=["grafana"], metrics_endpoints=[]):
 def metrics_endpoint(name, port, path="/metrics"):
     return {"name": name, "port": port, "path": path}
 
-def grafana_kubernetes(namespace="default", labels=["grafana"]):
+def grafana_kubernetes(
+    namespace="default", 
+    labels=["grafana"],
+    mimir_enabled=False,
+    ):
     tfdir = os.path.dirname(__file__)
 
-    helm_repo('grafana-helm', 'https://grafana.github.io/helm-charts')
-    helm_repo('prometheus-community','https://prometheus-community.github.io/helm-charts')
+    helm_repo('grafana-helm', 'https://grafana.github.io/helm-charts', labels=labels)
+    helm_repo('prometheus-community','https://prometheus-community.github.io/helm-charts', labels=labels)
     helm_resource('loki', 'grafana/loki-stack')
-    helm_resource('grafana', 'grafana/grafana', flags=["-f", os.path.join(tfdir, 'grafana-values.yaml')])
-    helm_resource('tempo', 'grafana/tempo', flags=["-f", os.path.join(tfdir, 'tempo-values.yaml')])
-    helm_resource('prometheus', 'prometheus-community/prometheus')
+    helm_resource('grafana', 'grafana/grafana', flags=["-f", os.path.join(tfdir, 'kubernetes/grafana-values.yaml')])
+    helm_resource('tempo', 'grafana/tempo', flags=["-f", os.path.join(tfdir, 'kubernetes/tempo-values.yaml')])
+    helm_resource('prometheus', 'prometheus-community/prometheus', flags=["-f", os.path.join(tfdir, 'kubernetes/prometheus-values.yaml')])
+
+    if mimir_enabled:
+        k8s_yaml([
+            os.path.join(tfdir,"kubernetes/mimir/deployment.yaml"),
+            os.path.join(tfdir,"kubernetes/mimir/service.yaml"),
+            os.path.join(tfdir,"kubernetes/mimir/mimir-config.yaml")
+            ])
 
     k8s_resource(
         "grafana", 
@@ -54,6 +65,11 @@ def grafana_kubernetes(namespace="default", labels=["grafana"]):
         "prometheus",
         labels=labels
     )
+    if mimir_enabled:
+        k8s_resource(
+            "mimir",
+            labels=labels
+        )
 
     return struct(
         otlp_grpc = "tempo:4317",

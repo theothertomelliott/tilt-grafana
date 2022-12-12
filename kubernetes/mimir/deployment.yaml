@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mimir
+  labels:
+    app: mimir
+spec:
+  selector:
+    matchLabels:
+      app: mimir
+  template:
+    metadata:
+      labels:
+        app: mimir
+    spec:
+      containers:
+      - name: mimir
+        image: grafana/mimir:2.4.0
+        args: ["--config.file=/etc/mimir/config.yaml"]
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+          - containerPort: 9009
+        volumeMounts:
+        - name: mimir-config
+          mountPath: /etc/mimir/
+      volumes:
+      - name: mimir-config
+        configMap:
+          # Provide the name of the ConfigMap containing the files you want
+          # to add to the container
+          name: mimir-config

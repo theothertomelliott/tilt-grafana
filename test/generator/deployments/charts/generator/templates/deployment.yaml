@@ -21,10 +21,10 @@ spec:
             value: {{ .Values.otlp_http }}
         resources:
           requests:
-            memory: "64Mi"
+            memory: "50Mi"
             cpu: "250m"
           limits:
-            memory: "128Mi"
+            memory: "50Mi"
             cpu: "500m"
         ports:
           - containerPort: 2112
