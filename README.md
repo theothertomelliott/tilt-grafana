@@ -2,6 +2,15 @@
 
 A [Tilt Extension](https://docs.tilt.dev/extensions.html) for working with the LGTM stack from Grafana (Loki, Grafana, Tempo, Mimir).
 
+# Resource Requirements
+
+Running the full LGTM stack locally can use almost 3GB of RAM in a steady stage. In order to provide your other workloads with enough resources to run, it is recommended that you provide your local Kubernetes cluster with at least 8GB of RAM.
+
+Configuration Instructions:
+
+* [Docker Desktop](https://docs.docker.com/desktop/settings/mac/#resources)
+* [Colima](https://github.com/abiosoft/colima#customization-examples)
+
 # Usage
 
 To import this repo for use, add the following to your `Tiltfile`:
