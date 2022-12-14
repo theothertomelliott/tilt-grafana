@@ -37,10 +37,10 @@ def grafana_kubernetes(
     helm_repo('grafana-helm', 'https://grafana.github.io/helm-charts', labels=labels)
     helm_repo('prometheus-community','https://prometheus-community.github.io/helm-charts', labels=labels)
     
-    helm_resource('loki', 'grafana/loki-stack')
-    helm_resource('grafana', 'grafana/grafana', flags=["-f", os.path.join(tfdir, 'kubernetes/grafana-values.yaml')])
-    helm_resource('tempo', 'grafana/tempo', flags=["-f", os.path.join(tfdir, 'kubernetes/tempo-values.yaml')])
-    helm_resource('phlare', 'grafana/phlare')
+    helm_resource('loki', 'grafana-helm/loki-stack')
+    helm_resource('grafana', 'grafana-helm/grafana', flags=["-f", os.path.join(tfdir, 'kubernetes/grafana-values.yaml')])
+    helm_resource('tempo', 'grafana-helm/tempo', flags=["-f", os.path.join(tfdir, 'kubernetes/tempo-values.yaml')])
+    helm_resource('phlare', 'grafana-helm/phlare')
 
     helm_resource('prometheus', 'prometheus-community/prometheus', flags=["-f", os.path.join(tfdir, 'kubernetes/prometheus-values.yaml')])
 
