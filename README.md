@@ -4,7 +4,7 @@ A [Tilt Extension](https://docs.tilt.dev/extensions.html) for working with the L
 
 # Resource Requirements
 
-Running the full LGTM stack locally can use almost 3GB of RAM in a steady stage. In order to provide your other workloads with enough resources to run, it is recommended that you provide your local Kubernetes cluster with at least 8GB of RAM.
+Running the full LGTM stack locally can use almost 3GB of RAM in a steady state. In order to provide your other workloads with enough resources to run, it is recommended that you provide your local Kubernetes cluster with at least 8GB of RAM.
 
 You will typically set the total memory available to your cluster in your Docker configuration, with a few
 examples below:
