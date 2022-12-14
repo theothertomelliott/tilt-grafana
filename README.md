@@ -12,6 +12,9 @@ examples below:
 * [Docker Desktop](https://docs.docker.com/desktop/settings/mac/#resources)
 * [Colima](https://github.com/abiosoft/colima#customization-examples)
 
+Rancher Desktop's built-in Kubernetes does not seem to obey its Docker memory configuration and may
+experience performance issues. Running Kind on Rancher Desktop has been a successful workaround.
+
 # Usage
 
 To import this repo for use, add the following to your `Tiltfile`:
