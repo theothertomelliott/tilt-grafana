@@ -1,6 +1,6 @@
 # Tilt Grafana
 
-A [Tilt Extension](https://docs.tilt.dev/extensions.html) for working with the LGTM stack from Grafana (Loki, Grafana, Tempo, Mimir).
+A [Tilt Extension](https://docs.tilt.dev/extensions.html) for working with the LGTM stack from Grafana ([Loki](https://grafana.com/oss/loki/), [Grafana](https://grafana.com/oss/grafana/), [Tempo](https://grafana.com/oss/tempo/), [Mimir](https://grafana.com/oss/mimir/)). [Prometheus](https://prometheus.io/) is included to scrape metrics for Mimir. Finally, as a bonus, [Phlare](https://grafana.com/docs/phlare/latest/) is also installed when running under Kubernetes.
 
 # Resource Requirements
 
