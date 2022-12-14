@@ -6,7 +6,8 @@ A [Tilt Extension](https://docs.tilt.dev/extensions.html) for working with the L
 
 Running the full LGTM stack locally can use almost 3GB of RAM in a steady stage. In order to provide your other workloads with enough resources to run, it is recommended that you provide your local Kubernetes cluster with at least 8GB of RAM.
 
-Configuration Instructions:
+You will typically set the total memory available to your cluster in your Docker configuration, with a few
+examples below:
 
 * [Docker Desktop](https://docs.docker.com/desktop/settings/mac/#resources)
 * [Colima](https://github.com/abiosoft/colima#customization-examples)
@@ -31,7 +32,7 @@ endpoints = grafana_kubernetes()
 ...
 ```
 
-Mimir can cause performance issues, so it is disabled in Kubernetes by default. You can enable it by setting
+Mimir can use a lot of memory, so it is disabled in Kubernetes by default. You can enable it by setting
 `mimir_enabled=True`:
 
 ```
