@@ -73,7 +73,7 @@ Fields within this struct are currently:
 
 * otlp_grpc
 * otlp_http
-* zipki
+* zipkin
 * jaeger_grpc
 
 For example, the test compose-based Tiltfile at `test/compose` uses the `otlp_http` value as an environment
