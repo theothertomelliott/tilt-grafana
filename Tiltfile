@@ -11,7 +11,7 @@ def grafana_compose(labels=["grafana"], metrics_endpoints=[]):
     dc_resource('mimir', labels=labels)
 
     logfile = tfdir+ "/compose/logs/tilt.log"
-    local_resource('log-forwarder', serve_cmd="tilt logs -f | sed 's/│/\\|/g' > " + logfile, labels=labels)
+    local_resource('log-forwarder', serve_cmd="tilt logs -f | sed 's/│/\\|/g' > \"" + logfile "\"", labels=labels)
 
     if len(metrics_endpoints) > 0:
         prometheus_compose_impl(endpoints=metrics_endpoints,labels=labels)
