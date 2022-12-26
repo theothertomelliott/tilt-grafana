@@ -20,7 +20,8 @@ def grafana_compose(labels=["grafana"], metrics_endpoints=[]):
         otlp_grpc = "localhost:4317",
         otlp_http = "localhost:4318",
         zipkin = "localhost:9411",
-        jaeger_grpc = "localhost:14268", #?
+        jaeger_http = "localhost:14268",
+        jaeger_grpc = "localhost:14250",
         mimir = "http://localhost:9009/api/v1/push"
     )
 
