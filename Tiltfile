@@ -79,8 +79,8 @@ def grafana_kubernetes(
         )
 
     return struct(
-        otlp_grpc = "tempo:4317",
-        otlp_http = "tempo:4318",
-        zipkin = "tempo:9411",
-        jaeger_grpc = "tempo:14250"
+        otlp_grpc = "tempo.default:4317",
+        otlp_http = "tempo.default:4318",
+        zipkin = "tempo.default:9411",
+        jaeger_grpc = "tempo.default:14250"
     )
