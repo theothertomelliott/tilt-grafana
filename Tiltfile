@@ -36,14 +36,15 @@ def grafana_kubernetes(
     tfdir = os.path.dirname(__file__)
 
     helm_repo('grafana', 'https://grafana.github.io/helm-charts', labels=labels)
-    helm_repo('prometheus-community','https://prometheus-community.github.io/helm-charts', labels=labels)
     
-    helm_resource('loki', 'grafana/loki-stack')
-    helm_resource('grafana-service', 'grafana/grafana', flags=["-f", os.path.join(tfdir, 'kubernetes/grafana-values.yaml')])
-    helm_resource('tempo', 'grafana/tempo', flags=["-f", os.path.join(tfdir, 'kubernetes/tempo-values.yaml')])
-    helm_resource('phlare', 'grafana/phlare')
+    helm_resource('loki', 'grafana/loki-stack', resource_deps=["grafana"])
+    helm_resource('grafana-service', 'grafana/grafana', flags=["-f", os.path.join(tfdir, 'kubernetes/grafana-values.yaml')], resource_deps=["grafana"])
+    helm_resource('tempo', 'grafana/tempo', flags=["-f", os.path.join(tfdir, 'kubernetes/tempo-values.yaml')], resource_deps=["grafana"])
+    helm_resource('phlare', 'grafana/phlare', resource_deps=["grafana"])
 
-    helm_resource('prometheus', 'prometheus-community/prometheus', flags=["-f", os.path.join(tfdir, 'kubernetes/prometheus-values.yaml')])
+    helm_repo('prometheus-community','https://prometheus-community.github.io/helm-charts', labels=labels)
+
+    helm_resource('prometheus', 'prometheus-community/prometheus', flags=["-f", os.path.join(tfdir, 'kubernetes/prometheus-values.yaml')], resource_deps=["prometheus-community"])
 
     if mimir_enabled:
         k8s_yaml([
