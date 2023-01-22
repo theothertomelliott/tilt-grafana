@@ -72,6 +72,7 @@ def grafana_kubernetes(
     )
     k8s_resource(
         "prometheus",
+        port_forwards="9090:9090",
         labels=labels
     )
     if mimir_enabled:

@@ -3,6 +3,9 @@ server:
   - url: http://mimir:9009/api/v1/push
   persistentVolume:
     enabled: false
+  extraFlags:
+    - web.enable-remote-write-receiver
+
   
 alertmanager:
   enabled: false
