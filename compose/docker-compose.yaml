@@ -11,7 +11,9 @@ services:
       - 9000:3000
     volumes:
       - ./grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
-  
+      - ./dashboards:/etc/grafana/provisioning/dashboards
+      - ./dashboards/dashboards:/var/lib/grafana/dashboards
+ 
   loki:
     image: grafana/loki:2.6.1
     ports:

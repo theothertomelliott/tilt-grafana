@@ -1,14 +1,29 @@
 load('ext://helm_resource', 'helm_resource', 'helm_repo')
+load('ext://configmap', 'configmap_create')
 load("compose/prometheus/Tiltfile", "prometheus_compose_impl")
 
-def grafana_compose(labels=["grafana"], metrics_endpoints=[]):
+def grafana_compose(
+    labels=["grafana"], 
+    metrics_endpoints=[],
+    dashboard_files=[],
+    ):
+
     tfdir = os.path.dirname(__file__)
     docker_compose(os.path.join(tfdir, 'compose/docker-compose.yaml'))
-    dc_resource('grafana', labels=labels)
+    dc_resource('grafana', labels=labels, resource_deps=["Copy dashboards"])
     dc_resource('loki', labels=labels)
     dc_resource('tempo', labels=labels)
     dc_resource('promtail', labels=labels)
     dc_resource('mimir', labels=labels)
+
+    # Set up the dashboards directory with the specified files
+    dashboard_command = "rm -rf " + tfdir+"/compose/dashboards/dashboards/*.json"
+    for index, dashboard in enumerate(dashboard_files):
+        dashboard_command = dashboard_command + " && cp " + dashboard + " " + tfdir+"/compose/dashboards/dashboards/dashboard" + str(index) + ".json"
+    local_resource(
+            "Copy dashboards",
+            cmd=dashboard_command,
+            )
 
     logfile = tfdir+ "/compose/logs/tilt.log"
     local_resource('log-forwarder', serve_cmd="tilt logs -f | sed 's/│/\\|/g' > \"" + logfile + "\"", labels=labels)
@@ -32,13 +47,34 @@ def grafana_kubernetes(
     namespace="default", 
     labels=["grafana"],
     mimir_enabled=False,
+    dashboard_files=[],
     ):
+
     tfdir = os.path.dirname(__file__)
+
+    # Set up the dashboards with the specified files
+    from_file = ['README.md=' + tfdir + '/README.md'] # Include a non-json file to allow for calling without dashboard files
+    for index, dashboard in enumerate(dashboard_files):
+        from_file.append(
+            "dashboard" + str(index) + ".json" + "=" + dashboard
+        )
+    configmap_create(
+        'grafana-dashboard-config', 
+        namespace=namespace, 
+        from_file=from_file,
+    )
 
     helm_repo('grafana-helm', 'https://grafana.github.io/helm-charts', labels=labels)
     
     helm_resource('loki', 'grafana-helm/loki-stack', resource_deps=["grafana-helm"])
-    helm_resource('grafana', 'grafana-helm/grafana', flags=["-f", os.path.join(tfdir, 'kubernetes/grafana-values.yaml')], resource_deps=["grafana-helm"])
+    helm_resource(
+        'grafana', 
+        'grafana-helm/grafana', 
+        flags=[
+            "-f", os.path.join(tfdir, 'kubernetes/grafana-values.yaml'),
+            ], 
+        resource_deps=["grafana-helm"],
+    )
     helm_resource('tempo', 'grafana-helm/tempo', flags=["-f", os.path.join(tfdir, 'kubernetes/tempo-values.yaml')], resource_deps=["grafana-helm"])
     helm_resource('phlare', 'grafana-helm/phlare', resource_deps=["grafana-helm"])
 

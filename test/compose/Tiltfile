@@ -7,7 +7,8 @@ load('ext://tilt-grafana', 'grafana_compose', 'metrics_endpoint')
 endpoints = grafana_compose(
     metrics_endpoints=[
         metrics_endpoint(name='generator', port=2112)
-    ]
+    ],
+    dashboard_files=['../dashboards/example.json']
 )
 
 local_resource(

@@ -95,3 +95,13 @@ local_resource(
     labels=["generator"]
 )
 ```
+
+# Dashboards
+
+You can provision pre-configured dashboards to your instance of Grafana by specifying a set of paths to json files in the `dashboard_files` parameter. These paths are relative to your `Tiltfile`.
+
+```
+endpoints = grafana_compose(
+    dashboard_files=['../dashboards/example.json']
+)
+```
